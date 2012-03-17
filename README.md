@@ -5,45 +5,43 @@ visitor.js
 
 ### Use:
 
-```js
-<script type="text/javascript" src = "visitor.js"></script>
+```html
+<script type="text/javascript" src="visitor.js"></script>
 
-<script>
-	
+<script>	
 	//access the visitor object here
 	console.log(visitor.city);
-
 </script>
 ```
 
 ### Following data is exposed via visitor object:
 
-### browser data
-	- *visitor.browser_name*
-	- *visitor.browser_version*
-	- *visitor.browser_engine*
-	- *visitor.os*
-	- *visitor.screen_resolution*
-	- *visitor.screen_width*
-	- *visitor.screen_height*
-	- *visitor.referrer*
-	- *visitor.url*
-	- *visitor.language*
+### Browser data
+	visitor.browser_name
+	visitor.browser_version
+	visitor.browser_engine
+	visitor.os
+	visitor.screen_resolution
+	visitor.screen_width
+	visitor.screen_height
+	visitor.referrer
+	visitor.url
+	visitor.language
  
 ### Geo data
-	- *visitor.country_code*
-	- *visitor.country_name*
-	- *visitor.city*
-	- *visitor.region*
-	- *visitor.region_name*
-	- *visitor.latitude*
-	- *visitor.longitude*
-	- *visitor.postal_code*
+	visitor.country_code
+	visitor.country_name
+	visitor.city
+	visitor.region
+	visitor.region_name
+	visitor.latitude
+	visitor.longitude
+	visitor.postal_code
 
-### session data
-	- *visitor.count*
-    - *visitor.first_visit_on*
-    - *visitor.current_visit_on*
+### Session data
+	visitor.count
+	visitor.first_visit_on
+	visitor.current_visit_on
 
 ### License 
 
