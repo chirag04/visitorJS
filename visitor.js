@@ -120,34 +120,34 @@ var visitor = {};
                                 subString: "Linux",
                                 identity: "Linux"
                             }]
-        };  // end of browser detect
-        BrowserDetect.init();
+		};  // end of browser detect
+		BrowserDetect.init();
 		var loadscript = function(url,callback) {    
-	        var script = document.createElement('script');
-	        script.type = 'text/javascript';
-	        if(script.readyState) { //IE
-	            script.onreadystatechange = function() {
-	                if(script.readyState == 'loaded' || script.readyState == 'complete') {
-	                    script.onreadystatechange = null;
-	                    callback();
-	                }
-	            };
-	        } else { //Others
-	            script.onload = function() {
-	                callback();
-	        	};
-        	}
-	        script.src = url;
-	        document.getElementsByTagName('head')[0].appendChild(script);
-    	}; //end of loadscript
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			if(script.readyState) { //IE
+			    script.onreadystatechange = function() {
+			        if(script.readyState == 'loaded' || script.readyState == 'complete') {
+			            script.onreadystatechange = null;
+			            callback();
+			        }
+			    };
+			} else { //Others
+			    script.onload = function() {
+			        callback();
+				};
+			}
+			script.src = url;
+			document.getElementsByTagName('head')[0].appendChild(script);
+    		}; //end of loadscript
 
-    	/* load geoip script and expose data through visitor object */
+    		/* load geoip script and expose data through visitor object */
 		loadscript('http://j.maxmind.com/app/geoip.js', function(){
 			/* browser data */
 			visitor.browser_name = BrowserDetect.browser;
-    		visitor.browser_version = BrowserDetect.version;
-    		visitor.browser_engine = navigator.product;
-    		visitor.os = BrowserDetect.OS;
+	    		visitor.browser_version = BrowserDetect.version;
+	    		visitor.browser_engine = navigator.product;
+	    		visitor.os = BrowserDetect.OS;
 			visitor.screen_resolution = screen.width+'x'+screen.height;
 			visitor.screen_width = screen.width;
 			visitor.screen_height = screen.height;
