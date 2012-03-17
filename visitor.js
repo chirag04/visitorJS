@@ -17,7 +17,7 @@ This product includes GeoLite data created by MaxMind, available from http://max
 
 var visitor = {};
 (function() {
-		var BrowserDetect ={
+        var BrowserDetect ={
                             init: function () {
                                 this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
                                 this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "an unknown version";
@@ -120,48 +120,105 @@ var visitor = {};
                                 subString: "Linux",
                                 identity: "Linux"
                             }]
-		};  // end of browser detect
-		BrowserDetect.init();
-		var loadscript = function(url,callback) {    
-			var script = document.createElement('script');
-			script.type = 'text/javascript';
-			if(script.readyState) { //IE
-			    script.onreadystatechange = function() {
-			        if(script.readyState == 'loaded' || script.readyState == 'complete') {
-			            script.onreadystatechange = null;
-			            callback();
-			        }
-			    };
-			} else { //Others
-			    script.onload = function() {
-			        callback();
-				};
-			}
-			script.src = url;
-			document.getElementsByTagName('head')[0].appendChild(script);
-    		}; //end of loadscript
+        };  // end of browser detect
+        BrowserDetect.init();
+        var loadscript = function(url,callback) {    
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            if(script.readyState) { //IE
+                script.onreadystatechange = function() {
+                    if(script.readyState == 'loaded' || script.readyState == 'complete') {
+                        script.onreadystatechange = null;
+                        callback();
+                    }
+                };
+            } else { //Others
+                script.onload = function() {
+                    callback();
+                };
+            }
+            script.src = url;
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }; //end of loadscript
 
-    		/* load geoip script and expose data through visitor object */
-		loadscript('http://j.maxmind.com/app/geoip.js', function(){
-			/* browser data */
-			visitor.browser_name = BrowserDetect.browser;
-	    		visitor.browser_version = BrowserDetect.version;
-	    		visitor.browser_engine = navigator.product;
-	    		visitor.os = BrowserDetect.OS;
-			visitor.screen_resolution = screen.width+'x'+screen.height;
-			visitor.screen_width = screen.width;
-			visitor.screen_height = screen.height;
-			visitor.referrer = document.referrer;
-			visitor.url = window.location.href;
-			visitor.language = navigator.language; 
-			/* Geo data */
-			visitor.country_code = geoip_country_code();
-			visitor.country_name = geoip_country_name();
-			visitor.city = geoip_city();
-			visitor.region = geoip_region();
-			visitor.region_name = geoip_region_name();
-			visitor.latitude = geoip_latitude();
-			visitor.longitude = geoip_longitude();
-			visitor.postal_code = geoip_postal_code();
-		});	
+        var setCookie = function (name, value, expires, path, domain, secure) {
+            var today = new Date();
+            today.setTime(today.getTime());
+            if (expires) {
+                expires = expires * 1000 * 60 * 60 * 24
+            }
+            var expires_date = new Date(today.getTime() + (expires));
+            document.cookie = name + "=" + encodeURIComponent(value) + ((expires) ? ";expires=" + expires_date.toGMTString() : "") + ((path) ? ";path=" + path : "") + ((domain) ? ";domain=" + domain : "") + ((secure) ? ";secure" : "")
+        };
+
+        var getCookie = function (check_name) {
+            var cookies = document.cookie.split(";");
+            var temp_cookie = "";
+            var cookie_name = "";
+            var cookie_value = "";
+            var cookie_found = false;
+            for (i = 0; i < cookies.length; i++) {
+                temp_cookie = cookies[i].split("=");
+                cookie_name = temp_cookie[0].replace(/^\s+|\s+$/g, "");
+                if (cookie_name == check_name) {
+                    cookie_found = true;
+                    if (temp_cookie.length > 1) {
+                        cookie_value = decodeURIComponent(temp_cookie[1].replace(/^\s+|\s+$/g, ""))
+                    }
+                    break;
+                }
+            }
+            if (!cookie_found) {
+                return null
+            } else {
+                return cookie_value;
+            }
+        };
+
+        var load_visitor_session = function () {
+            var visitor_cookie = getCookie('visitor');
+            if(visitor_cookie) {
+                var values = visitor_cookie.split("__");
+                var count = +values[0];
+                cookieVal = (count+1) + "__" + values[1];
+                setCookie("visitor", cookieVal, 99999, "/", "", "");
+                visitor.count = count;
+                visitor.first_visit_on = values[1];
+                visitor.current_visit_on = new Date().toString();
+            } else {
+                var curr_date = new Date().toString();
+                cookieVal = "1__" + curr_date;
+                setCookie("visitor", cookieVal, 99999, "/", "", "");
+                visitor.count = 1;
+                visitor.first_visit_on = curr_date;
+                visitor.current_visit_on = visitor.first_visit;
+            }
+        };
+        
+
+        /* load geoip script and expose data through visitor object */
+        loadscript('http://j.maxmind.com/app/geoip.js', function(){
+            /* browser data */
+            visitor.browser_name = BrowserDetect.browser;
+            visitor.browser_version = BrowserDetect.version;
+            visitor.browser_engine = navigator.product;
+            visitor.os = BrowserDetect.OS;
+            visitor.screen_resolution = screen.width+'x'+screen.height;
+            visitor.screen_width = screen.width;
+            visitor.screen_height = screen.height;
+            visitor.referrer = document.referrer;
+            visitor.url = window.location.href;
+            visitor.language = navigator.language; 
+            /* Geo data */
+            visitor.country_code = geoip_country_code();
+            visitor.country_name = geoip_country_name();
+            visitor.city = geoip_city();
+            visitor.region = geoip_region();
+            visitor.region_name = geoip_region_name();
+            visitor.latitude = geoip_latitude();
+            visitor.longitude = geoip_longitude();
+            visitor.postal_code = geoip_postal_code();
+            /* session data */
+            load_visitor_session();
+        }); 
 }) ();
